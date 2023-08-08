@@ -28,3 +28,5 @@ yarn dev
 ## aditional info 
 1.if you want to check commands look at `package.json` file `scripts section`
 2. if you want to use this setup just fork but don't forget to mention my github username into your repositpry 
+3. querys and mutations can be found in `http://localhost:4000/graphql` , check in the grapql editor 
+4. if you have any questions related to project contact to `https://t.me/smikayel`
