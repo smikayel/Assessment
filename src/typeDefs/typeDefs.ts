@@ -15,5 +15,6 @@ export default gql `
   type Mutation {
     login(email: String!, password: String!): String
     signUp(name: String!, email: String!, password: String!): String
+    changePassword(oldPassword: String!, newPassword: String!): String
   }
 `

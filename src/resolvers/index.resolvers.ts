@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { jwtPrivateKey } from "../constants";
 import UserModel from "../repos/userRepo/user.schema";
-import { getUsersByEmail, getUsersById } from '../repos/userRepo/user.handler';
+import { changePassword, getUsersByEmail, getUsersById } from '../repos/userRepo/user.handler';
 
 
 export default {
@@ -44,6 +44,15 @@ export default {
           {algorithm: 'HS256', subject: `${savedUser.id}`, expiresIn: '1d'}
         )     
 
+      } catch (error) {
+        console.error('Error signing up user:', error);
+        throw error;
+      }
+    },
+    changePassword: async (parent, { oldPassword, newPassword }, {user}) => {
+      if (!user) return 'user not unauthorized'
+      try {
+        return changePassword(user.id, newPassword, oldPassword)
       } catch (error) {
         console.error('Error signing up user:', error);
         throw error;
