@@ -1,52 +1,53 @@
 import jwt from 'jsonwebtoken'
-import { v4 as uuidv4 } from 'uuid';
-
 import { jwtPrivateKey } from "../constants";
-import { users } from "../data";
 import UserModel from "../repos/userRepo/user.schema";
+import { getUsersByEmail, getUsersById } from '../repos/userRepo/user.handler';
 
 
 export default {
   Query: {
-    user(parent, { id }) {
-      return users.find(user => user.id === id)
-    },
-    getUser(parent, args, {user}) {
+    getUser: async (parent, args, {user}) => {
       let foundedUser = null
       if (user) {
-        foundedUser = users.find(({id}) => id === +user.sub)
+        foundedUser = await getUsersById(user.id)
       }
       return foundedUser
     }
   },
   Mutation: {
-    login(parent,{ email, password }) {
-      const {id, name, role } = users.find(
-        user => user.email === email && user.password === password
-      )
+    login: async (parent,{ email, password }) => {
+      const foundUser = await getUsersByEmail(email)
+
+      if (!foundUser || foundUser.password != password) return "wrong password"
+      const {id, name, role } = foundUser
       return jwt.sign(
         {id, name, role },
         jwtPrivateKey,
         {algorithm: 'HS256', subject: `${id}`, expiresIn: '1d'}
       )     
     },
-    async signUp(parent, {name, email, password }) {
+    signUp: async (parent, args) => {
+      const { name, email, password } = args;
       try {
-        const role = 'user'
         const newUser = new UserModel({
-          id: uuidv4(),
           name,
           email,
-          role,
           password,
+          role: 'user',
         });
-    
-        const savedUser = await newUser.save();
-        return savedUser;
-      } catch (err) {
-        return err
-      }
-    }
-  }
 
+        const savedUser = await newUser.save();
+
+        return jwt.sign(
+          {id: savedUser.id, name, role: savedUser.role },
+          jwtPrivateKey,
+          {algorithm: 'HS256', subject: `${savedUser.id}`, expiresIn: '1d'}
+        )     
+
+      } catch (error) {
+        console.error('Error signing up user:', error);
+        throw error;
+      }
+    },
+  },
 }

@@ -38,5 +38,5 @@ dbConnection.once('open', () => {
 });
 
 app.listen(port,() => {
-  console.log('🚀 Server is up and running on port! 🌐🎉 Let the magic begin! 🪄✨')
+  console.log(`🚀 Server is up and running on port! 🌐🎉 Let the magic begin! 🪄✨\nhttp://localhost:${port}/graphql`)
 })
