@@ -23,7 +23,6 @@ export async function getUsersById(id: string) {
   }
 }
 
-
 // Query users with specific conditions
 export async function getUsersByEmail(email: string) {
   try {

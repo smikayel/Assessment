@@ -13,7 +13,6 @@ export interface AuthenticatedRequest extends Request {
   user?: TokenPayload;
 }
 
-
 export const WithAuth = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
 
   function unauthorized () {
